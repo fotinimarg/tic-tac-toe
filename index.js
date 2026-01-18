@@ -16,9 +16,7 @@ const gameboard = (function () {
     ["", "", ""],
   ];
 
-  const getPositionSymbol = (x, y) => {
-    gameboardArray[x][y];
-  };
+  const getPositionSymbol = (x, y) => gameboardArray[x][y];
 
   const setGameboard = (x, y, symbol) => {
     if ((x, y >= 0 && x, y < 3 && gameboardArray[x][y] === "")) {
@@ -79,9 +77,8 @@ const controller = (function () {
   player2.setSymbol("O");
 
   let current = player1.getSymbol() === "X" ? player1 : player2;
-  let winner;
 
-  while (current !== null) {
+  while (1) {
     let x = Number(prompt("Give position x"));
     let y = Number(prompt("Give position y"));
 
@@ -90,13 +87,12 @@ const controller = (function () {
 
     console.log(checkRow(x, s), checkColumn(y, s), checkDiagonals(s));
     if (checkRow(x, s) || checkColumn(y, s) || checkDiagonals(s)) {
-      winner = current;
-      current = null;
+      break;
     }
 
     current = current === player1 ? player2 : player1;
     console.log(gameboard.getGameboard());
   }
 
-  console.log("Winner: " + winner.name);
+  console.log("Winner: " + current.name);
 })();
