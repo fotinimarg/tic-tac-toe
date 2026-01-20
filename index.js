@@ -9,6 +9,16 @@ function Player(name) {
   return { name, setSymbol, getSymbol };
 }
 
+const displayController = (function () {
+  const container = document.querySelector(".container");
+
+  for (i = 0; i < 9; i++) {
+    const square = document.createElement("div");
+    square.classList.add("square");
+    container.appendChild(square);
+  }
+})();
+
 const gameboard = (function () {
   const gameboardArray = [
     ["", "", ""],
@@ -79,8 +89,8 @@ const controller = (function () {
   let current = player1.getSymbol() === "X" ? player1 : player2;
 
   while (1) {
-    let x = Number(prompt("Give position x"));
-    let y = Number(prompt("Give position y"));
+    //let x = Number(prompt("Give position x"));
+    //let y = Number(prompt("Give position y"));
 
     const s = current.getSymbol();
     gameboard.setGameboard(x, y, s);
