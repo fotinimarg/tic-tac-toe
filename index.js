@@ -9,21 +9,11 @@ function Player(name) {
   return { name, setSymbol, getSymbol };
 }
 
-const displayController = (function () {
-  const container = document.querySelector(".container");
-
-  for (i = 0; i < 9; i++) {
-    const square = document.createElement("div");
-    square.classList.add("square");
-    container.appendChild(square);
-  }
-})();
-
 const gameboard = (function () {
-  const gameboardArray = [
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
+  let gameboardArray = [
+    ["X", "", ""],
+    ["", "", "X"],
+    ["", "X", ""],
   ];
 
   const getPositionSymbol = (x, y) => gameboardArray[x][y];
@@ -45,6 +35,43 @@ const gameboard = (function () {
   };
 
   return { getPositionSymbol, setGameboard, resetGameboard, getGameboard };
+})();
+
+const displayController = (function () {
+  const container = document.querySelector(".container");
+
+  for (i = 0; i < 3; i++) {
+    for (j = 0; j < 3; j++) {
+      const square = document.createElement("div");
+      square.classList.add("square");
+      container.appendChild(square);
+    }
+  }
+
+  const displayGameboard = () => {
+    let squares = document.querySelectorAll(".square");
+
+    let squareNum = 0;
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        const symbol = gameboard.getPositionSymbol(i, j);
+        squares[squareNum].textContent = symbol;
+        squareNum++;
+      }
+    }
+  };
+
+  const winner = (player) => {
+    const winDiv = document.createElement("div");
+    winDiv.textContent = "Winner is: " + player.name;
+    document.appendChild(winDiv);
+  };
+
+  const newButton = document.querySelector(".new-round");
+  newButton.addEventListener("click", (e) => {
+    gameboard.resetGameboard();
+    displayGameboard();
+  });
 })();
 
 const controller = (function () {
@@ -94,8 +121,8 @@ const controller = (function () {
 
     const s = current.getSymbol();
     gameboard.setGameboard(x, y, s);
+    displayController.displayGameboard();
 
-    console.log(checkRow(x, s), checkColumn(y, s), checkDiagonals(s));
     if (checkRow(x, s) || checkColumn(y, s) || checkDiagonals(s)) {
       break;
     }
@@ -104,5 +131,6 @@ const controller = (function () {
     console.log(gameboard.getGameboard());
   }
 
+  displayController.winner(current);
   console.log("Winner: " + current.name);
 })();

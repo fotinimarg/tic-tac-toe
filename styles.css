@@ -81,4 +81,22 @@ body {
   background-color: white;
   color: black;
   border: #333 solid;
+  font-size: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-round {
+  border: none;
+  color: white;
+  background-color: rgb(229, 106, 127);
+  border-radius: 10px;
+  padding: 8px 30px;
+  cursor: pointer;
+  transition-duration: 0.3s;
+}
+
+.new-round:hover {
+  background-color: rgb(233, 84, 109);
 }
