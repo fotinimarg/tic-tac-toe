@@ -120,9 +120,14 @@ const controller = (function () {
 
   let x;
   let y;
+  let gameOver = false;
   const squares = document.querySelectorAll(".square");
   squares.forEach((square) => {
     square.addEventListener("click", (e) => {
+      if (gameOver) {
+        return;
+      }
+
       x = Number(e.target.dataset.x);
       y = Number(e.target.dataset.y);
 
@@ -131,6 +136,7 @@ const controller = (function () {
 
       if (checkRow(x, s) || checkColumn(y, s) || checkDiagonals(s)) {
         displayController.winner(current);
+        gameOver = true;
         return;
       }
 
