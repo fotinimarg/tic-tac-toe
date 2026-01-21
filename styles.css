@@ -85,6 +85,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+}
+
+.square:hover,
+.square:focus {
+  border: rgb(229, 106, 127) solid;
+}
+
+.disabled {
+  cursor: not-allowed;
 }
 
 .new-round {
@@ -99,4 +109,18 @@ body {
 
 .new-round:hover {
   background-color: rgb(233, 84, 109);
+}
+
+.win-div {
+  background-color: white;
+  width: 300px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  border: rgb(229, 106, 127) solid;
+}
+
+.hide {
+  display: none;
 }

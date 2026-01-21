@@ -21,6 +21,9 @@ const gameboard = (function () {
   const setGameboard = (x, y, symbol) => {
     if ((x, y >= 0 && x, y < 3 && gameboardArray[x][y] === "")) {
       gameboardArray[x][y] = symbol;
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -64,12 +67,19 @@ const displayController = (function () {
 
   const winner = (player) => {
     const winDiv = document.querySelector(".win-div");
-    winDiv.textContent = "Winner is: " + player.name;
+    if (player) {
+      winDiv.classList.remove("hide");
+      winDiv.textContent = "Winner is: " + player.name;
+    } else {
+      winDiv.classList.add("hide");
+    }
   };
 
   const newButton = document.querySelector(".new-round");
   newButton.addEventListener("click", (e) => {
     gameboard.resetGameboard();
+    controller.newRound();
+    winner(null);
     displayGameboard();
   });
 
@@ -131,7 +141,11 @@ const controller = (function () {
       x = Number(e.target.dataset.x);
       y = Number(e.target.dataset.y);
 
-      gameboard.setGameboard(x, y, s);
+      const returnVal = gameboard.setGameboard(x, y, s);
+      if (!returnVal) {
+        return;
+      }
+      e.target.classList.add("disabled");
       displayController.displayGameboard();
 
       if (checkRow(x, s) || checkColumn(y, s) || checkDiagonals(s)) {
@@ -144,4 +158,16 @@ const controller = (function () {
       s = current.getSymbol();
     });
   });
+
+  const newRound = () => {
+    current = player1.getSymbol() === "X" ? player1 : player2;
+    s = current.getSymbol();
+
+    gameOver = false;
+    squares.forEach((square) => {
+      square.classList.remove("disabled");
+    });
+  };
+
+  return { newRound };
 })();
