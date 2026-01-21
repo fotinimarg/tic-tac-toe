@@ -11,9 +11,9 @@ function Player(name) {
 
 const gameboard = (function () {
   let gameboardArray = [
-    ["X", "", ""],
-    ["", "", "X"],
-    ["", "X", ""],
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
   ];
 
   const getPositionSymbol = (x, y) => gameboardArray[x][y];
@@ -39,11 +39,12 @@ const gameboard = (function () {
 
 const displayController = (function () {
   const container = document.querySelector(".container");
-
   for (i = 0; i < 3; i++) {
     for (j = 0; j < 3; j++) {
       const square = document.createElement("div");
       square.classList.add("square");
+      square.dataset.x = i;
+      square.dataset.y = j;
       container.appendChild(square);
     }
   }
@@ -62,9 +63,8 @@ const displayController = (function () {
   };
 
   const winner = (player) => {
-    const winDiv = document.createElement("div");
+    const winDiv = document.querySelector(".win-div");
     winDiv.textContent = "Winner is: " + player.name;
-    document.appendChild(winDiv);
   };
 
   const newButton = document.querySelector(".new-round");
@@ -72,6 +72,8 @@ const displayController = (function () {
     gameboard.resetGameboard();
     displayGameboard();
   });
+
+  return { displayGameboard, winner };
 })();
 
 const controller = (function () {
@@ -114,23 +116,26 @@ const controller = (function () {
   player2.setSymbol("O");
 
   let current = player1.getSymbol() === "X" ? player1 : player2;
+  let s = current.getSymbol();
 
-  while (1) {
-    //let x = Number(prompt("Give position x"));
-    //let y = Number(prompt("Give position y"));
+  let x;
+  let y;
+  const squares = document.querySelectorAll(".square");
+  squares.forEach((square) => {
+    square.addEventListener("click", (e) => {
+      x = Number(e.target.dataset.x);
+      y = Number(e.target.dataset.y);
 
-    const s = current.getSymbol();
-    gameboard.setGameboard(x, y, s);
-    displayController.displayGameboard();
+      gameboard.setGameboard(x, y, s);
+      displayController.displayGameboard();
 
-    if (checkRow(x, s) || checkColumn(y, s) || checkDiagonals(s)) {
-      break;
-    }
+      if (checkRow(x, s) || checkColumn(y, s) || checkDiagonals(s)) {
+        displayController.winner(current);
+        return;
+      }
 
-    current = current === player1 ? player2 : player1;
-    console.log(gameboard.getGameboard());
-  }
-
-  displayController.winner(current);
-  console.log("Winner: " + current.name);
+      current = current === player1 ? player2 : player1;
+      s = current.getSymbol();
+    });
+  });
 })();
