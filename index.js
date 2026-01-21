@@ -1,12 +1,18 @@
 function Player(name) {
   let symbol = "";
+  let score = 0;
 
   const setSymbol = (newSymbol) => {
     symbol = newSymbol;
   };
 
+  const increaseScore = () => {
+    score++;
+  };
+
   const getSymbol = () => symbol;
-  return { name, setSymbol, getSymbol };
+  const getScore = () => score;
+  return { name, setSymbol, getSymbol, increaseScore, getScore };
 }
 
 const gameboard = (function () {
@@ -92,6 +98,7 @@ const displayController = (function () {
 
   const newButton = document.querySelector("#new-round");
   const resetButton = document.querySelector("#reset");
+  const results = document.querySelector(".results");
 
   const startGame = () => {
     gameStarted = true;
@@ -108,12 +115,21 @@ const displayController = (function () {
   };
 
   const winner = (player) => {
-    const winDiv = document.querySelector(".win-div");
+    const win = document.querySelector(".win");
+    const score = document.querySelector(".score");
     if (player) {
-      winDiv.classList.remove("hidden");
-      winDiv.textContent = "Winner is: " + player.name;
+      results.classList.remove("hidden");
+      player.increaseScore();
+      score.textContent =
+        "Score: " +
+        players.player1.getScore() +
+        " - " +
+        players.player2.getScore();
+
+      win.classList.remove("hidden");
+      win.textContent = "Winner is: " + player.name;
     } else {
-      winDiv.classList.add("hidden");
+      win.classList.add("hidden");
     }
   };
 
@@ -140,6 +156,7 @@ const displayController = (function () {
     newButton.textContent = "Start";
     form.classList.remove("hidden");
     container.classList.add("hidden");
+    results.classList.add("hidden");
   });
 
   return { displayGameboard, winner };
