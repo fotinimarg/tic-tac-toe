@@ -9,9 +9,25 @@
   </head>
   <body>
     <h1>Tic Tac Toe</h1>
-    <div class="container"></div>
-    <div class="win-div hide"></div>
-    <button class="new-round">New Round</button>
+    <div class="container hidden"></div>
+    <div class="win-div hidden"></div>
+    <form id="names" action="">
+      <label for="player1">Player 1: </label>
+      <input type="text" id="player1" name="player1" required />
+      <label for="symbol"></label>
+      <select id="symbol" name="symbol">
+        <option value="X">X</option>
+        <option value="O">O</option>
+      </select>
+      <label for="player2">Player 2: </label>
+      <input type="text" id="player2" name="player2" required />
+    </form>
+    <div class="buttons">
+      <button type="submit" form="names" class="controller" id="new-round">
+        Start
+      </button>
+      <button id="reset" class="controller hidden">Reset</button>
+    </div>
     <script src="index.js"></script>
   </body>
 </html>

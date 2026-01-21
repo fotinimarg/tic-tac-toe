@@ -41,6 +41,10 @@ const gameboard = (function () {
 })();
 
 const displayController = (function () {
+  let gameStarted = false;
+  let players;
+
+  // Create grid for tic tac toe
   const container = document.querySelector(".container");
   for (i = 0; i < 3; i++) {
     for (j = 0; j < 3; j++) {
@@ -51,6 +55,27 @@ const displayController = (function () {
       container.appendChild(square);
     }
   }
+
+  // Get users' names and choice of symbol
+  const form = document.querySelector("form");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    const player1 = Player(formData.get("player1").trim());
+    const player2 = Player(formData.get("player2").trim());
+    player1.setSymbol(formData.get("symbol"));
+    if (formData.get("symbol") === "X") {
+      player2.setSymbol("O");
+    } else {
+      player2.setSymbol("X");
+    }
+
+    players = { player1, player2 };
+
+    startGame();
+  });
 
   const displayGameboard = () => {
     let squares = document.querySelectorAll(".square");
@@ -65,28 +90,63 @@ const displayController = (function () {
     }
   };
 
+  const newButton = document.querySelector("#new-round");
+  const resetButton = document.querySelector("#reset");
+
+  const startGame = () => {
+    gameStarted = true;
+
+    newButton.textContent = "New Round";
+    resetButton.classList.remove("hidden");
+
+    form.classList.add("hidden");
+    form.reset();
+
+    gameboard.resetGameboard();
+    controller.newRound(players);
+    displayGameboard();
+  };
+
   const winner = (player) => {
     const winDiv = document.querySelector(".win-div");
     if (player) {
-      winDiv.classList.remove("hide");
+      winDiv.classList.remove("hidden");
       winDiv.textContent = "Winner is: " + player.name;
     } else {
-      winDiv.classList.add("hide");
+      winDiv.classList.add("hidden");
     }
   };
 
-  const newButton = document.querySelector(".new-round");
-  newButton.addEventListener("click", (e) => {
+  const resetGame = () => {
     gameboard.resetGameboard();
-    controller.newRound();
+    controller.newRound(players);
     winner(null);
     displayGameboard();
+  };
+
+  newButton.addEventListener("click", () => {
+    if (!gameStarted) {
+      form.requestSubmit();
+    } else {
+      resetGame();
+    }
+  });
+
+  resetButton.addEventListener("click", () => {
+    gameStarted = false;
+    players = null;
+    winner(null);
+    resetButton.classList.add("hidden");
+    newButton.textContent = "Start";
+    form.classList.remove("hidden");
+    container.classList.add("hidden");
   });
 
   return { displayGameboard, winner };
 })();
 
 const controller = (function () {
+  // Check if we have same symbol in a row
   const checkRow = (row, symbol) => {
     for (let col = 0; col < 3; col++) {
       if (gameboard.getPositionSymbol(row, col) !== symbol) {
@@ -96,6 +156,7 @@ const controller = (function () {
     return true;
   };
 
+  // Check if we have same symbol in a column
   const checkColumn = (col, symbol) => {
     for (let row = 0; row < 3; row++) {
       if (gameboard.getPositionSymbol(row, col) !== symbol) {
@@ -105,6 +166,7 @@ const controller = (function () {
     return true;
   };
 
+  // Check if we have same symbol in diagonals
   const checkDiagonals = (symbol) => {
     const diag1 =
       gameboard.getPositionSymbol(0, 0) === symbol &&
@@ -119,28 +181,21 @@ const controller = (function () {
     return diag1 || diag2;
   };
 
-  const player1 = Player("Fot");
-  const player2 = Player("Jorge");
-
-  player1.setSymbol("X");
-  player2.setSymbol("O");
-
-  let current = player1.getSymbol() === "X" ? player1 : player2;
-  let s = current.getSymbol();
-
-  let x;
-  let y;
+  let players;
+  let current;
+  let s;
   let gameOver = false;
   const squares = document.querySelectorAll(".square");
   squares.forEach((square) => {
     square.addEventListener("click", (e) => {
-      if (gameOver) {
+      if (gameOver || !current) {
         return;
       }
 
-      x = Number(e.target.dataset.x);
-      y = Number(e.target.dataset.y);
+      const x = Number(e.target.dataset.x);
+      const y = Number(e.target.dataset.y);
 
+      // If it's not empty cell return
       const returnVal = gameboard.setGameboard(x, y, s);
       if (!returnVal) {
         return;
@@ -154,16 +209,23 @@ const controller = (function () {
         return;
       }
 
-      current = current === player1 ? player2 : player1;
+      // Change current player
+      current = current === players.player1 ? players.player2 : players.player1;
       s = current.getSymbol();
     });
   });
 
-  const newRound = () => {
-    current = player1.getSymbol() === "X" ? player1 : player2;
-    s = current.getSymbol();
+  const newRound = (newPlayers) => {
+    players = newPlayers;
 
+    current =
+      players.player1.getSymbol() === "X" ? players.player1 : players.player2;
+    s = current.getSymbol();
     gameOver = false;
+
+    // Show grid and remove disabled cursor when hovering.
+    const container = document.querySelector(".container");
+    container.classList.remove("hidden");
     squares.forEach((square) => {
       square.classList.remove("disabled");
     });

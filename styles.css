@@ -1,4 +1,4 @@
-/* CSS Reset */
+/*----------- CSS Reset -----------*/
 *,
 *::before,
 *::after {
@@ -58,6 +58,8 @@ h6 {
   isolation: isolate;
 }
 
+/*----------- My styles-----------*/
+
 body {
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
@@ -97,7 +99,7 @@ body {
   cursor: not-allowed;
 }
 
-.new-round {
+.controller {
   border: none;
   color: white;
   background-color: rgb(229, 106, 127);
@@ -107,7 +109,7 @@ body {
   transition-duration: 0.3s;
 }
 
-.new-round:hover {
+.controller:hover {
   background-color: rgb(233, 84, 109);
 }
 
@@ -118,9 +120,48 @@ body {
   border-radius: 10px;
   text-align: center;
   font-weight: bold;
-  border: rgb(229, 106, 127) solid;
+  border: 2px rgb(229, 106, 127) solid;
 }
 
-.hide {
+.hidden {
   display: none;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  margin: 4px 0px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 6px 12px;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border: 2px rgb(229, 106, 127) solid;
+}
+
+select {
+  background: #fff;
+  padding: 5px 10px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+select:focus {
+  outline: none;
+  border: 2px rgb(229, 106, 127) solid;
+}
+
+option {
+  color: #333;
+}
+
+.buttons {
+  display: flex;
+  gap: 24px;
 }
